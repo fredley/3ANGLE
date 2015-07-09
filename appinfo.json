@@ -1,0 +1,33 @@
+{
+    "appKeys": {
+        "BG_KEY": 1,
+        "COLOR_KEY": 0
+    },
+    "capabilities": [
+        "configurable"
+    ],
+    "companyName": "fredley@gmail.com",
+    "longName": "3Angle",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/icon.png",
+                "menuIcon": true,
+                "name": "MENU_ICON",
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "3Angle",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "5a2b8aed-d65f-453f-ae9c-ee7d3925a382",
+    "versionLabel": "1.2",
+    "watchapp": {
+        "watchface": true
+    }
+}
