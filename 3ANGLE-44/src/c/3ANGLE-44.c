@@ -113,7 +113,6 @@ static void hour_update_proc(Layer *this_layer, GContext *ctx) {
   graphics_fill_circle(ctx, center, 12);
   graphics_draw_circle(ctx, center, 10);
 };
-
 static void minute_update_proc(Layer *this_layer, GContext *ctx) {
   GRect bounds = layer_get_bounds(this_layer);
   GPoint center = GPoint(bounds.size.w / 2, (bounds.size.h / 2));
@@ -142,7 +141,6 @@ static void second_update_proc(Layer *this_layer, GContext *ctx) {
   graphics_fill_circle(ctx, center, 8);
   graphics_draw_circle(ctx, center, 5);
 };
-
 static void triangle_update_proc(Layer *this_layer, GContext *ctx) {
   // Draw the triangle
 #ifdef PBL_COLOR
@@ -170,6 +168,7 @@ static void triangle_update_proc(Layer *this_layer, GContext *ctx) {
 };
 
 static void points_update_proc(Layer *this_layer, GContext *ctx) {
+
   GRect bounds = layer_get_bounds(this_layer);
   //draw bg
 #ifdef PBL_COLOR
@@ -192,8 +191,26 @@ static void points_update_proc(Layer *this_layer, GContext *ctx) {
   }
 }
 
-static void main_window_load(Window *window) {
-  Layer *window_layer = window_get_root_layer(window);
+static void prv_select_click_handler(ClickRecognizerRef recognizer, void *context) {
+
+}
+
+static void prv_up_click_handler(ClickRecognizerRef recognizer, void *context) {
+
+}
+
+static void prv_down_click_handler(ClickRecognizerRef recognizer, void *context) {
+
+}
+
+static void prv_click_config_provider(void *context) {
+  window_single_click_subscribe(BUTTON_ID_SELECT, prv_select_click_handler);
+  window_single_click_subscribe(BUTTON_ID_UP, prv_up_click_handler);
+  window_single_click_subscribe(BUTTON_ID_DOWN, prv_down_click_handler);
+}
+
+static void prv_window_load(Window *window) {
+    Layer *window_layer = window_get_root_layer(window);
   GRect window_bounds = layer_get_bounds(window_layer);
 
   // Create Layer
@@ -243,7 +260,7 @@ static void main_window_load(Window *window) {
   trigger_hour_animation(true);
 }
 
-static void main_window_unload(Window *window) {
+static void prv_window_unload(Window *window) {
   // Destroy Layer
   layer_destroy(s_points_layer);
   layer_destroy(s_hour_layer);
@@ -258,12 +275,12 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   }
 }
 
-static void init(void) {
+static void prv_init(void) {
   // Create main Window
   s_main_window = window_create();
   window_set_window_handlers(s_main_window, (WindowHandlers) {
-    .load = main_window_load,
-    .unload = main_window_unload,
+    .load = prv_window_load,
+    .unload = prv_window_unload,
   });
   tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
   window_stack_push(s_main_window, true);
@@ -272,7 +289,7 @@ static void init(void) {
 #endif
 }
 
-static void deinit(void) {
+static void prv_deinit(void) {
   // Destroy main Window
   window_destroy(s_main_window);
 #ifdef PBL_SDK_3
@@ -281,7 +298,7 @@ static void deinit(void) {
 }
 
 int main(void) {
-  init();
+  prv_init();
   app_event_loop();
-  deinit();
+  prv_deinit();
 }

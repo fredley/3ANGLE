@@ -1,0 +1,38 @@
+{
+  "name": "threeangle",
+  "author": "Tom White",
+  "version": "1.0.0",
+  "keywords": [
+    "pebble-app"
+  ],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "3Angle",
+    "uuid": "a790bddb-0cd3-41d1-b7cf-e1bf4e79fbcc",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "aplite",
+      "basalt",
+      "chalk",
+      "diorite"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": [
+      "dummy"
+    ],
+    "resources": {
+      "media": [
+        {
+          "file": "images/icon.png",
+          "menuIcon": true,
+          "name": "MENU_ICON",
+          "type": "png"
+        }
+      ]
+    }
+  }
+}
