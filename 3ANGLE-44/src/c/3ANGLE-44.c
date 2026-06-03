@@ -98,8 +98,14 @@ static void compute_geometry(GRect bounds) {
   }
 }
 
+// Marker layers are padded a little larger than the circle they hold: a filled
+// circle of radius r spans 2r+1 pixels, so a 2r layer would clip its bottom/right
+// edge. The pad also leaves room for the antialiased stroke.
+#define MARKER_PAD 2
+
 static GRect marker_frame(GPoint at, int radius) {
-  return GRect(at.x - radius, at.y - radius, radius * 2, radius * 2);
+  int half = radius + MARKER_PAD;
+  return GRect(at.x - half, at.y - half, half * 2, half * 2);
 }
 
 static void trigger_hour_animation(bool force) {
@@ -161,7 +167,12 @@ static void hour_update_proc(Layer *this_layer, GContext *ctx) {
 #endif
   graphics_context_set_fill_color(ctx, bg_color);
   graphics_fill_circle(ctx, center, s_hour_r);
+#ifdef PBL_COLOR
+  // Rim hugs the fill edge so the marker has a crisp outer border.
+  graphics_draw_circle(ctx, center, s_hour_r - s_stroke / 2);
+#else
   graphics_draw_circle(ctx, center, s_hour_ir);
+#endif
 };
 
 static void minute_update_proc(Layer *this_layer, GContext *ctx) {
@@ -176,7 +187,11 @@ static void minute_update_proc(Layer *this_layer, GContext *ctx) {
   graphics_context_set_stroke_color(ctx, GColorWhite);
 #endif
   graphics_fill_circle(ctx, center, s_minute_r);
+#ifdef PBL_COLOR
+  graphics_draw_circle(ctx, center, s_minute_r - s_stroke / 2);
+#else
   graphics_draw_circle(ctx, center, s_minute_ir);
+#endif
 };
 static void second_update_proc(Layer *this_layer, GContext *ctx) {
   GRect bounds = layer_get_bounds(this_layer);
@@ -190,7 +205,11 @@ static void second_update_proc(Layer *this_layer, GContext *ctx) {
   graphics_context_set_stroke_color(ctx, GColorWhite);
 #endif
   graphics_fill_circle(ctx, center, s_second_r);
+#ifdef PBL_COLOR
+  graphics_draw_circle(ctx, center, s_second_r - s_stroke / 2);
+#else
   graphics_draw_circle(ctx, center, s_second_ir);
+#endif
 };
 
 static void triangle_update_proc(Layer *this_layer, GContext *ctx) {
@@ -203,11 +222,11 @@ static void triangle_update_proc(Layer *this_layer, GContext *ctx) {
   graphics_context_set_stroke_color(ctx, color);
 
   GRect bounds = layer_get_frame(s_second_layer);
-  GPoint sec = GPoint(bounds.origin.x + s_second_r, bounds.origin.y + s_second_r);
+  GPoint sec = grect_center_point(&bounds);
   bounds = layer_get_frame(s_minute_layer);
-  GPoint minute = GPoint(bounds.origin.x + s_minute_r, bounds.origin.y + s_minute_r);
+  GPoint minute = grect_center_point(&bounds);
   bounds = layer_get_frame(s_hour_layer);
-  GPoint hour = GPoint(bounds.origin.x + s_hour_r, bounds.origin.y + s_hour_r);
+  GPoint hour = grect_center_point(&bounds);
 
   GPathInfo triangle_path = {
     .num_points = 3,
